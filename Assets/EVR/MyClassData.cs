@@ -1,4 +1,5 @@
-﻿public class MyClassData 
+﻿[System.Serializable]
+public class MyClassData 
 {
     //This is just going to be a simple class that holds the data that will be sent back and forth...
 
