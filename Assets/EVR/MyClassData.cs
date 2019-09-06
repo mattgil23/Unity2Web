@@ -1,11 +1,16 @@
-﻿[System.Serializable]
+﻿using UnityEngine;
+using UnityEditor;
+using System.Collections;
+using Unity.Collections;
+
+[System.Serializable]
 public class MyClassData 
 {
     //This is just going to be a simple class that holds the data that will be sent back and forth...
-
-    public string Ticket = "0000011";
-    public string ExperienceNumber = "1";
-    public string HeadSetNumber = "1";
+    //[CustomPropertyDrawer(typeof(ReadOnlyAttribute))]
+    public string Ticket = "8328193";
+    public string ExperienceNumber = "2";
+    public string HeadSetNumber = "2";
     public string UserFirstName = "Matt";
     public string UserLastName = "Gill";
     public bool PassorFail = false;

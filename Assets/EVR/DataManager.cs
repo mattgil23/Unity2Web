@@ -1,8 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using System.IO;
+using System;
+using System.Web;
 
 //This Script will be what controls the ability to push and get data given the input of the UI
 //Some things already typed are just thoughts or starting points.... ~MG
@@ -24,9 +28,11 @@ public class DataManager : MonoBehaviour
     public int myHeadsetNumberInt;
     public Button getDataButton;
     public Button sendDataButton;
-
+    public string json; 
     public MyClassData myData;
-
+    public MyClassData myDataPost;
+    public string ticket;
+    private string gameDataProjectFilePath = "/EVR/data.json";
     public string myGetEndpoint = "probablyneedtoedit";
     public string myPushEndpoint = "probablyneedtochangethis";
     // Start is called before the first frame update
@@ -43,11 +49,19 @@ public class DataManager : MonoBehaviour
     void GetData()
     {
         Debug.Log("Trying To Get the Data!");
-        StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/test"));
-        //1)first get the headset# and add that to the endpoint url
-        //2)Then use like "UnityWebrequest" to "get" at the correct url (return log if not active) and
-        //assign it to "myData" (the JsonUtility functions should help with this...)
-        //3)Get data and then assign it correctly to vars to display
+
+        //Appending headset information to the URL for GET request
+        string longurl = "http://evr-demo.herokuapp.com/test?";
+        var uriBuilder = new UriBuilder(longurl);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["HeadSetNumber"] = "1";
+        uriBuilder.Query = query.ToString();
+        longurl = uriBuilder.ToString();
+        StartCoroutine(GetRequest(longurl));
+
+        //StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/test?HeadSetNumber=1"));
+
+        //StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/images/login.png"));
     }
 
 
@@ -68,19 +82,27 @@ public class DataManager : MonoBehaviour
 
             else
             {
+
+                //image
+                //Texture myTexture = ((DownloadHandlerTexture)webRequest.downloadHandler).texture;
+
+
                 //Debug.Log(webRequest.downloadHandler.text.ToString());
 
                 string dataAsJson = webRequest.downloadHandler.text.ToString();
+
                 // Pass the json to JsonUtility, and tell it to create a GameData object from it
                 myData = JsonUtility.FromJson<MyClassData>(dataAsJson);
+                //JsonUtility.FromJsonOverwrite( dataAsJson , this);
 
-                // Retrieve the allRoundData property of loadedData
-                //allRoundData = loadedData.allRoundData;
-
-                //Debug.Log(pages[3] + ":\nReceived: " + webRequest.downloadHandler.text.ToString());
-                Debug.Log("Ticket: " + myData.Ticket + " \nExperience Number: " + myData.ExperienceNumber + " Head Set Number: " + myData.HeadSetNumber + " User First Name: " + myData.UserFirstName + " User Last Name: " + myData.UserLastName + " Passed? " + myData.PassorFail + " Grade: " + myData.Grade + " Previous Date: " + myData.PreviousDate + " Current Date: " + myData.CurrentDate + " Is it Completed Before: " + myData.CompletedBefore);
+                //1. print the results received from GET
+                ticket = myData.Ticket;
                 Debug.Log("Ticket: " + myData.Ticket + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
 
+                //2. Save the results to data.json
+                dataAsJson = JsonUtility.ToJson(myData);
+                string filePath = Application.dataPath + gameDataProjectFilePath;
+                File.WriteAllText(filePath, dataAsJson);
             }
         }
 
@@ -90,7 +112,7 @@ public class DataManager : MonoBehaviour
     void SendData()
     {
         Debug.Log("Trying To Send the Data!");
-        //StartCoroutine(Upload());
+        StartCoroutine(Upload());
         //1)Update data fields with new information
         //2)reference the headset# to add to endpoint url
         //3)mostlikely update myData with entered information and convert to .json with Jsonutility
@@ -99,25 +121,41 @@ public class DataManager : MonoBehaviour
     }
 
 
-    //IEnumerator Upload()
-    //{
-    //    WWWForm form = new WWWForm();
-    //    form.AddField("myField", "myData");
+    IEnumerator Upload()
+    {
+        //1. generate result from the data.json file.
+        string filePath = Application.dataPath + gameDataProjectFilePath;
+        string dataAsJson = File.ReadAllText(filePath);
+        myDataPost = JsonUtility.FromJson<MyClassData>(dataAsJson);
+        json = JsonUtility.ToJson(myDataPost);
 
-    //    using (UnityWebRequest www = UnityWebRequest.Post("http://www.my-server.com/myform", form))
-    //    {
-    //        yield return www.SendWebRequest();
+        //2. generate json from class
+        //myData = new MyClassData();
+        //json = JsonUtility.ToJson(myData);
 
-    //        if (www.isNetworkError || www.isHttpError)
-    //        {
-    //            Debug.Log(www.error);
-    //        }
-    //        else
-    //        {
-    //            Debug.Log("Form upload complete!");
-    //        }
-    //    }
-    //}
+        //3. generate data from received result after GET
+        //json = JsonUtility.ToJson(myData);
+
+        //creating a from with key value pair.
+        WWWForm form = new WWWForm();
+        //form.AddField(ticket, json);
+        form.AddField("data", json);
+        using (UnityWebRequest www = UnityWebRequest.Post("http://evr-demo.herokuapp.com/test", form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
+                Debug.Log(www.downloadHandler.isDone.ToString());
+    
+            }
+        }
+    }
 
 
 }
