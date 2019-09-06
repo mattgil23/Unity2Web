@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System;
 using System.Web;
+using System.Net;
 
 //This Script will be what controls the ability to push and get data given the input of the UI
 //Some things already typed are just thoughts or starting points.... ~MG
@@ -57,13 +58,37 @@ public class DataManager : MonoBehaviour
         query["HeadSetNumber"] = "1";
         uriBuilder.Query = query.ToString();
         longurl = uriBuilder.ToString();
-        StartCoroutine(GetRequest(longurl));
+        // StartCoroutine(GetRequest(longurl));
 
         //StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/test?HeadSetNumber=1"));
 
         //StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/images/login.png"));
+        //StartCoroutine(GetText());
+
+        //save image from url to local disk
+        WebClient webClient = new WebClient();
+        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+
     }
 
+    //Save image as a texture.....error in casting, need to fix
+    //IEnumerator GetText()
+    //{
+    //    using (UnityWebRequest uwr = UnityWebRequestTexture.GetTexture("http://evr-demo.herokuapp.com/images/login.png"))
+    //    {
+    //        yield return uwr.SendWebRequest();
+
+    //        if (uwr.isNetworkError || uwr.isHttpError)
+    //        {
+    //            Debug.Log(uwr.error);
+    //        }
+    //        else
+    //        {
+    //            // Get downloaded asset bundle
+    //            var texture = DownloadHandlerTexture.GetContent(uwr);
+    //        }
+    //    }
+    //}
 
     IEnumerator GetRequest(string uri)
     {
