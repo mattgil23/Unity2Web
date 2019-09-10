@@ -5,11 +5,8 @@ using System.IO;
 
 public class GameDataEditor : EditorWindow
 {
-
     public MyClassData gameData;
-
     private string gameDataProjectFilePath = "/EVR/data.json";
-
     [MenuItem("Window/Game Data Editor")]
     static void Init()
     {
@@ -23,9 +20,7 @@ public class GameDataEditor : EditorWindow
             SerializedObject serializedObject = new SerializedObject(this);
             SerializedProperty serializedProperty = serializedObject.FindProperty("gameData");
             EditorGUILayout.PropertyField(serializedProperty, true);
-
             serializedObject.ApplyModifiedProperties();
-
             if (GUILayout.Button("Save data"))
             {
                 SaveGameData();
@@ -55,11 +50,8 @@ public class GameDataEditor : EditorWindow
 
     private void SaveGameData()
     {
-
         string dataAsJson = JsonUtility.ToJson(gameData);
-
         string filePath = Application.dataPath + gameDataProjectFilePath;
         File.WriteAllText(filePath, dataAsJson);
-
     }
 }

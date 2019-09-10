@@ -686,20 +686,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659f137aa0aa3bf44885436328f64ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myFirstNameText: {fileID: 1473429566}
-  myFirstnameString: 
-  myLastNameText: {fileID: 495959991}
-  myLastNameString: 
+  myFirstNameText: {fileID: 85936737}
+  myLastNameText: {fileID: 1162817674}
   myPassingInformationToggle: {fileID: 813203465}
   myPassingInformationBool: 0
   myCompletionInformationToggle: {fileID: 1744285696}
   myCompletionInformationBool: 0
-  myHeadsetNumberText: {fileID: 1606892942}
-  myHeadsetNumberString: 
-  myHeadsetNumberInt: 0
-  myGradeText: {fileID: 1911745530}
-  myGradeString: 
-  myGradeInt: 0
+  myHeadsetNumberText: {fileID: 1542243724}
+  myGradeText: {fileID: 172605238}
   getDataButton: {fileID: 1325338336}
   sendDataButton: {fileID: 1247925716}
   json: 
