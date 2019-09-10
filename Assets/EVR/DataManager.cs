@@ -25,9 +25,14 @@ public class DataManager : MonoBehaviour
     public string json; 
     public MyClassData myData;
     public MyClassData myDataPost;
+    public ClassHeadset Hdata;
+    private string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\headset.txt";
     private string gameDataProjectFilePath = "/EVR/data.json";
-    public string myGetEndpoint = "probablyneedtoedit";
-    public string myPushEndpoint = "probablyneedtochangethis";
+    private string HeadsetPath = "/EVR/Hdata.json";
+    public string myGetEndpoint = "";
+    public string myPushEndpoint = "";
+    public string Headset = "";
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -46,22 +51,49 @@ public class DataManager : MonoBehaviour
         myData.CompletedBefore = false;
 
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
+
+        //Access the Headset Json to assign values
+        GetID();
+
+        //When Get or Post
         getDataButton.onClick.AddListener(GetData);
         sendDataButton.onClick.AddListener(SendData);
     }
-  
+
+    //Get the Headset Id and Endpoints and save to JSON
+    void GetID()
+    {
+        StreamReader inp_stm = new StreamReader(dataPath);
+
+        while (!inp_stm.EndOfStream)
+        {
+            string inp_ln = inp_stm.ReadLine();
+            //Debug.Log(inp_ln);
+            Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
+            inp_ln = JsonUtility.ToJson(Hdata);
+            string filePath = Application.dataPath + HeadsetPath;
+            File.WriteAllText(filePath, inp_ln);
+        }
+        inp_stm.Close();
+
+        Headset = Hdata.HeadsetID;
+        myGetEndpoint = Hdata.GetEndPoint;
+        myPushEndpoint = Hdata.PostEndPoint;
+
+    }
+
     void GetData()
     {
         Debug.Log("Trying To Get the Data!");
         
         //Appending headset information to the URL for GET request
-        string longurl = "http://evr-demo.herokuapp.com/test?";
-        var uriBuilder = new UriBuilder(longurl);
+        
+        var uriBuilder = new UriBuilder(myGetEndpoint);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-        query["HeadSetNumber"] = "1";
+        query["HeadSetNumber"] = Headset;
         uriBuilder.Query = query.ToString();
-        longurl = uriBuilder.ToString();
-        StartCoroutine(GetRequest(longurl));
+        myGetEndpoint = uriBuilder.ToString();
+        StartCoroutine(GetRequest(myGetEndpoint));
 
         //save image from url to local disk
         //WebClient webClient = new WebClient();
@@ -96,8 +128,8 @@ public class DataManager : MonoBehaviour
                 //Updating the Text fields in UI
                 myFirstNameText.text = myData.UserFirstName;
                 myLastNameText.text = myData.UserLastName;
-                myGradeText.text = myData.Grade.ToString();
-                myHeadsetNumberText.text = myData.HeadSetNumber;
+                myGradeText.text = "Grade: " + myData.Grade.ToString();
+                myHeadsetNumberText.text = "Head Set ID: " + myData.HeadSetNumber;
                 if (myData.PassorFail == true)
                     myPassingInformationToggle.isOn = true;
                 else
@@ -158,7 +190,7 @@ public class DataManager : MonoBehaviour
         WWWForm form = new WWWForm();
         //form.AddField(ticket, json);
         form.AddField("data", json);
-        using (UnityWebRequest www = UnityWebRequest.Post("http://evr-demo.herokuapp.com/test", form))
+        using (UnityWebRequest www = UnityWebRequest.Post(myPushEndpoint, form))
         {
             yield return www.SendWebRequest();
 
