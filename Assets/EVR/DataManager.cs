@@ -15,6 +15,8 @@ using System.Net;
 
 public class DataManager : MonoBehaviour
 {
+    System.DateTime date = System.DateTime.Now;
+    string dateFormat;
     private string gameDataFileName = "/EVR/data.json";
     public Text myFirstNameText = null;
     public string myFirstnameString;
@@ -42,15 +44,29 @@ public class DataManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
         getDataButton.onClick.AddListener(GetData);
         sendDataButton.onClick.AddListener(SendData);
         myFirstNameText.text = "";
+        myData.UserID = "";
+        myData.ConfigID = "";
+        myData.ExperienceNumber = "";
+        myData.HeadSetNumber = "";
+        myData.UserFirstName = "";
+        myData.UserLastName = "";
+        myData.PassorFail = false;
+        myData.Grade = 0 ;
+        myData.PreviousDate = "";
+        myData.CurrentDate = "";
+        myData.CompletedBefore = false ;
+
     }
     //I think you need to make an "Event" function for when a button is pressed to perform a function from it...
 
     //you should just have to fill in the the following event functions....
     void GetData()
     {
+        
         Debug.Log("Trying To Get the Data!");
 
         //Appending headset information to the URL for GET request
@@ -169,6 +185,7 @@ public class DataManager : MonoBehaviour
             myData.CompletedBefore = true;
         else
             myData.CompletedBefore = false;
+        myData.CurrentDate = dateFormat;
         String dataAsJson1 = JsonUtility.ToJson(myData);
 
         string filePath1 = Application.dataPath + gameDataProjectFilePath;
