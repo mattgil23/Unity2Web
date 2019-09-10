@@ -33,16 +33,15 @@ public class DataManager : MonoBehaviour
     {
         //initialize json file to default null values
         myFirstNameText.text = "";
-        myData.UserID = "";
-        myData.ConfigID = "";
+        myData.UserNumber = "";
+        myData.ConfigId = "";
         myData.ExperienceNumber = "";
         myData.HeadSetNumber = "";
         myData.UserFirstName = "";
         myData.UserLastName = "";
         myData.PassorFail = false;
         myData.Grade = 0;
-        myData.PreviousDate = "";
-        myData.CurrentDate = "";
+        myData.DateLastAttempted = "";
         myData.CompletedBefore = false;
 
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
@@ -91,7 +90,7 @@ public class DataManager : MonoBehaviour
                 myData = JsonUtility.FromJson<MyClassData>(dataAsJson);
 
                 //1. print the results received from GET
-                Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
+                Debug.Log("Ticket: " + myData.ConfigId + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.DateLastAttempted + " \nIs it Completed Before: " + myData.CompletedBefore);
 
                 //Updating the Text fields in UI
                 myFirstNameText.text = myData.UserFirstName;
@@ -136,7 +135,6 @@ public class DataManager : MonoBehaviour
             myData.CompletedBefore = true;
         else
             myData.CompletedBefore = false;
-        myData.CurrentDate = dateFormat;
         String dataAsJson1 = JsonUtility.ToJson(myData);
         string filePath1 = Application.dataPath + gameDataProjectFilePath;
         File.WriteAllText(filePath1, dataAsJson1);
