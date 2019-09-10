@@ -29,9 +29,10 @@ public class DataManager : MonoBehaviour
     private string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\headset.txt";
     private string gameDataProjectFilePath = "/EVR/data.json";
     private string HeadsetPath = "/EVR/Hdata.json";
+    public string Headset = "";
     public string myGetEndpoint = "";
     public string myPushEndpoint = "";
-    public string Headset = "";
+    
     
     // Start is called before the first frame update
     void Start()
