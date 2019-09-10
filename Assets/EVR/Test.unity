@@ -697,7 +697,7 @@ MonoBehaviour:
   myHeadsetNumberText: {fileID: 1606892942}
   myHeadsetNumberString: 
   myHeadsetNumberInt: 0
-  myGradeText: {fileID: 0}
+  myGradeText: {fileID: 1911745530}
   myGradeString: 
   myGradeInt: 0
   getDataButton: {fileID: 1325338336}

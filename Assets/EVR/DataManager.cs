@@ -157,13 +157,22 @@ public class DataManager : MonoBehaviour
         //A. Save the results to data.json *********************Updating the Text fields in UI*******************************************
         //myData = JsonUtility.FromJson<MyClassData>(myFirstNameText.text);
         //String dataAsJson1 = JsonUtility.ToJson(myData);
-        //Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
+        myData.UserFirstName = myFirstNameText.text;
+        myData.UserLastName = myLastNameText.text;
+        myData.Grade = int.Parse(myGradeText.text);
+        myData.HeadSetNumber = myHeadsetNumberText.text;
+        if (myPassingInformationToggle.isOn == true)
+            myData.PassorFail = true;
+        else
+            myData.PassorFail = false;
+        if (myCompletionInformationToggle.isOn == true)
+            myData.CompletedBefore = true;
+        else
+            myData.CompletedBefore = false;
+        String dataAsJson1 = JsonUtility.ToJson(myData);
 
-         myData.UserFirstName = myFirstNameText.text;
-        //Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
-
-        //string filePath1 = Application.dataPath + gameDataProjectFilePath;
-        //File.WriteAllText(filePath1, dataAsJson1);
+        string filePath1 = Application.dataPath + gameDataProjectFilePath;
+        File.WriteAllText(filePath1, dataAsJson1);
 
 
         //1. generate result from the data.json file.
