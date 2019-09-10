@@ -58,7 +58,7 @@ public class DataManager : MonoBehaviour
         query["HeadSetNumber"] = "1";
         uriBuilder.Query = query.ToString();
         longurl = uriBuilder.ToString();
-        // StartCoroutine(GetRequest(longurl));
+        StartCoroutine(GetRequest(longurl));
 
         //StartCoroutine(GetRequest("http://evr-demo.herokuapp.com/test?HeadSetNumber=1"));
 
@@ -66,8 +66,8 @@ public class DataManager : MonoBehaviour
         //StartCoroutine(GetText());
 
         //save image from url to local disk
-        WebClient webClient = new WebClient();
-        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+       // WebClient webClient = new WebClient();
+      // webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
 
     }
 
@@ -121,8 +121,8 @@ public class DataManager : MonoBehaviour
                 //JsonUtility.FromJsonOverwrite( dataAsJson , this);
 
                 //1. print the results received from GET
-                ticket = myData.Ticket;
-                Debug.Log("Ticket: " + myData.Ticket + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
+                ticket = myData.ConfigID;
+                Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
 
                 //2. Save the results to data.json
                 dataAsJson = JsonUtility.ToJson(myData);
