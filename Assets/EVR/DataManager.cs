@@ -16,7 +16,7 @@ using System.Net;
 public class DataManager : MonoBehaviour
 {
     private string gameDataFileName = "/EVR/data.json";
-    public Text myFirstNameText;
+    public Text myFirstNameText = null;
     public string myFirstnameString;
     public Text myLastNameText;
     public string myLastNameString;
@@ -27,6 +27,9 @@ public class DataManager : MonoBehaviour
     public Text myHeadsetNumberText;
     public string myHeadsetNumberString;
     public int myHeadsetNumberInt;
+    public Text myGradeText;
+    public string myGradeString;
+    public int myGradeInt;
     public Button getDataButton;
     public Button sendDataButton;
     public string json; 
@@ -41,8 +44,7 @@ public class DataManager : MonoBehaviour
     {
         getDataButton.onClick.AddListener(GetData);
         sendDataButton.onClick.AddListener(SendData);
-
-        //probably should 
+        myFirstNameText.text = "";
     }
     //I think you need to make an "Event" function for when a button is pressed to perform a function from it...
 
@@ -124,6 +126,10 @@ public class DataManager : MonoBehaviour
                 ticket = myData.ConfigID;
                 Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
 
+                //*********************Updating the Text fields in UI*******************************************
+                myFirstnameString = myData.UserFirstName;
+                myFirstNameText.text = myFirstnameString;
+                
                 //2. Save the results to data.json
                 dataAsJson = JsonUtility.ToJson(myData);
                 string filePath = Application.dataPath + gameDataProjectFilePath;
@@ -148,6 +154,18 @@ public class DataManager : MonoBehaviour
 
     IEnumerator Upload()
     {
+        //A. Save the results to data.json *********************Updating the Text fields in UI*******************************************
+        //myData = JsonUtility.FromJson<MyClassData>(myFirstNameText.text);
+        //String dataAsJson1 = JsonUtility.ToJson(myData);
+        //Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
+
+         myData.UserFirstName = myFirstNameText.text;
+        //Debug.Log("Ticket: " + myData.ConfigID + " \nExperience Number: " + myData.ExperienceNumber + " \nHead Set Number: " + myData.HeadSetNumber + " \nUser First Name: " + myData.UserFirstName + " \nUser Last Name: " + myData.UserLastName + " \nPassed? " + myData.PassorFail + " \nGrade: " + myData.Grade + " \nPrevious Date: " + myData.PreviousDate + " \nCurrent Date: " + myData.CurrentDate + " \nIs it Completed Before: " + myData.CompletedBefore);
+
+        //string filePath1 = Application.dataPath + gameDataProjectFilePath;
+        //File.WriteAllText(filePath1, dataAsJson1);
+
+
         //1. generate result from the data.json file.
         string filePath = Application.dataPath + gameDataProjectFilePath;
         string dataAsJson = File.ReadAllText(filePath);
