@@ -10,9 +10,12 @@ using System.Net;
 
 public class DataManager : MonoBehaviour
 {
+    private const string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
+
     //get current date
     System.DateTime date = System.DateTime.Now;
     string dateFormat;
+    Texture2D myTexture;
     private string gameDataFileName = "/EVR/data.json";
     public InputField myFirstNameText;
     public InputField myLastNameText;
@@ -26,7 +29,7 @@ public class DataManager : MonoBehaviour
     public MyClassData myData;
     public MyClassData myDataPost;
     public ClassHeadset Hdata;
-    private string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\headset.txt";
+    private string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
     private string gameDataProjectFilePath = "/EVR/data.json";
     private string HeadsetPath = "/EVR/Hdata.json";
     public string Headset = "";
@@ -96,12 +99,18 @@ public class DataManager : MonoBehaviour
         StartCoroutine(GetRequest(myGetEndpoint));
 
         //save image from url to local disk
-        //WebClient webClient = new WebClient();
-        //webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 4\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+       
     }
 
     IEnumerator GetRequest(string uri)
     {
+        WebClient webClient = new WebClient();
+        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+        WWW www = new WWW(Url);
+        while (!www.isDone)
+            yield return null;
+        GameObject image = GameObject.Find("RawImage");
+        image.GetComponent<RawImage>().texture = www.texture;
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             // Request and wait for the desired page.
