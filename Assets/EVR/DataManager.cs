@@ -137,8 +137,8 @@ public class DataManager : MonoBehaviour
                 //Updating the Text fields in UI
                 myFirstNameText.text = myData.UserFirstName;
                 myLastNameText.text = myData.UserLastName;
-                myGradeText.text = "Grade: " + myData.Grade.ToString();
-                myHeadsetNumberText.text = "Head Set ID: " + myData.HeadSetNumber;
+                myGradeText.text = myData.Grade.ToString();
+                myHeadsetNumberText.text = myData.HeadSetNumber;
                 if (myData.PassorFail == true)
                     myPassingInformationToggle.isOn = true;
                 else
