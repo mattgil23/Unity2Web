@@ -59,12 +59,27 @@ public class DataManager : MonoBehaviour
 
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
 
-        //Access the Headset Json to assign values
-        GetID();
+        if(Application.platform == RuntimePlatform.WindowsEditor)
+        {
+            Debug.Log("Windows Platform");
+            //Access the Headset Json to assign values
+            GetID();
 
-        //When Get or Post
-        getDataButton.onClick.AddListener(GetData);
-        sendDataButton.onClick.AddListener(SendData);
+            //When Get or Post
+            getDataButton.onClick.AddListener(GetData);
+            sendDataButton.onClick.AddListener(SendData);
+        }
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            Debug.Log("Android Platform");
+            //Access the Headset Json to assign values
+            GetID();
+
+            //When Get or Post
+            getDataButton.onClick.AddListener(GetData);
+            sendDataButton.onClick.AddListener(SendData);
+        }
+
     }
 
     //Get the Headset Id and Endpoints and save to JSON
