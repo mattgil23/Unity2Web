@@ -12,8 +12,12 @@ public class DataManager : MonoBehaviour
 {
 
     [Header("DataPaths")]
-    public string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
-    public string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
+    //public string Url = "file:///D://EVR//Projects//U2Web//Unity2Web//Assets//EVR//login.png";
+    //public string dataPath = "C:\\Users\\EnhanceVR\\Desktop\\headset.txt";
+    string dataPath;
+    string fileName = "headset.txt";
+    //public string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
+    //public string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
     private string HeadsetPath = "/EVR/Hdata.json";
     private string gameDataProjectFilePath = "/EVR/data.json";
     private string gameDataFileName = "/EVR/data.json";
@@ -41,6 +45,11 @@ public class DataManager : MonoBehaviour
     System.DateTime date = System.DateTime.Now;
     string dateFormat;
     Texture2D myTexture;
+    string m_Path;
+    string Url;
+    string combine_path;
+
+    string path;
     // Start is called before the first frame update
     void Start()
     {
@@ -58,10 +67,21 @@ public class DataManager : MonoBehaviour
         myData.CompletedBefore = false;
 
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
+        m_Path = Application.dataPath;
 
-        if(Application.platform == RuntimePlatform.WindowsEditor)
+
+        if (Application.platform == RuntimePlatform.WindowsEditor)
         {
             Debug.Log("Windows Platform");
+            //Output the Game data path to the console
+            path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            
+            dataPath = Path.GetFullPath(fileName);
+            Debug.Log(dataPath);
+            //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
+            Url = "file:///" + m_Path + "//EVR//login.png";
+            combine_path= m_Path + "//EVR//login.png";
+
             //Access the Headset Json to assign values
             GetID();
 
@@ -72,6 +92,9 @@ public class DataManager : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android)
         {
             Debug.Log("Android Platform");
+            //Output the Game data path to the console
+            Debug.Log("Path : " + m_Path);
+
             //Access the Headset Json to assign values
             GetID();
 
@@ -124,7 +147,8 @@ public class DataManager : MonoBehaviour
     IEnumerator GetRequest(string uri)
     {
         WebClient webClient = new WebClient();
-        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+        //webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
+        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", combine_path);
         WWW www = new WWW(Url);
         while (!www.isDone)
             yield return null;

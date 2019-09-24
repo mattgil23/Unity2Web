@@ -687,6 +687,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 659f137aa0aa3bf44885436328f64ce6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Url: file:///D://EVR//Projects//U2Web//Unity2Web//Assets//EVR//login.png
+  dataPath: C:\\Users\\EnhanceVR\\Desktop\\headset.txt
   myFirstNameText: {fileID: 85936737}
   myLastNameText: {fileID: 1162817674}
   myHeadsetNumberText: {fileID: 1542243724}
@@ -695,7 +697,6 @@ MonoBehaviour:
   myCompletionInformationToggle: {fileID: 1744285696}
   getDataButton: {fileID: 1325338336}
   sendDataButton: {fileID: 1247925716}
-  json: 
   myData:
     DateLastAttempted: 09/05/2019
     Grade: 90
@@ -722,9 +723,6 @@ MonoBehaviour:
     HeadsetID: 
     GetEndPoint: 
     PostEndPoint: 
-  Headset: 
-  myGetEndpoint: probablyneedtoedit
-  myPushEndpoint: probablyneedtochangethis
 --- !u!4 &179454930
 Transform:
   m_ObjectHideFlags: 0
