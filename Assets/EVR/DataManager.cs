@@ -10,13 +10,15 @@ using System.Net;
 
 public class DataManager : MonoBehaviour
 {
-    private const string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
 
-    //get current date
-    System.DateTime date = System.DateTime.Now;
-    string dateFormat;
-    Texture2D myTexture;
+    [Header("DataPaths")]
+    public string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
+    public string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
+    private string HeadsetPath = "/EVR/Hdata.json";
+    private string gameDataProjectFilePath = "/EVR/data.json";
     private string gameDataFileName = "/EVR/data.json";
+
+    [Header("User Information")]
     public InputField myFirstNameText;
     public InputField myLastNameText;
     public InputField myHeadsetNumberText;
@@ -25,18 +27,20 @@ public class DataManager : MonoBehaviour
     public Toggle myCompletionInformationToggle;
     public Button getDataButton;
     public Button sendDataButton;
-    public string json; 
+    private string json;
+
+    [Header("Class Data")]
     public MyClassData myData;
     public MyClassData myDataPost;
     public ClassHeadset Hdata;
-    private string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
-    private string gameDataProjectFilePath = "/EVR/data.json";
-    private string HeadsetPath = "/EVR/Hdata.json";
-    public string Headset = "";
-    public string myGetEndpoint = "";
-    public string myPushEndpoint = "";
-    
-    
+    private string Headset = "";
+    private string myGetEndpoint = "";
+    private string myPushEndpoint = "";
+
+    //get current date
+    System.DateTime date = System.DateTime.Now;
+    string dateFormat;
+    Texture2D myTexture;
     // Start is called before the first frame update
     void Start()
     {
