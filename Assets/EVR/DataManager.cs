@@ -104,7 +104,7 @@ public class DataManager : MonoBehaviour
             Debug.Log("Path : " + m_Path);
             dataPath = m_Path +  Path.GetFullPath(fileName);
             Debug.Log(dataPath);
-
+            combine_path = m_Path + Path.GetFullPath("login.png");
             //Access the Headset Json to assign values
             GetID_Android();
 
@@ -252,13 +252,17 @@ public class DataManager : MonoBehaviour
 
                 //2. Save the results to data.json
                 dataAsJson = JsonUtility.ToJson(myData);
-
+                string filePath;
                 if (Application.platform == RuntimePlatform.Android)
                 {
-                    CopyFile("data.json", "data");
+                    //CopyFile("data.json", "data");
+                    filePath = m_Path + Path.GetFullPath("data.json");
+                }
+                else
+                {
+                    filePath = Application.dataPath + gameDataProjectFilePath;
                 }
                 //CopyFile("data.json", "data");
-                string filePath = Application.dataPath + gameDataProjectFilePath;
                 File.WriteAllText(filePath, dataAsJson);
             }
         }
@@ -337,8 +341,8 @@ public class DataManager : MonoBehaviour
             Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
             inp_ln = JsonUtility.ToJson(Hdata);
             //CopyFile("Hdata.json", "Hdata");
-            var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
-            string filePath = Application.dataPath + HeadsetPath;
+            //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
+            string filePath = filePath = m_Path + Path.GetFullPath("Hdata.json");
             File.WriteAllText(filePath, inp_ln);
         }
         inp_stm.Close();
@@ -352,7 +356,7 @@ public class DataManager : MonoBehaviour
     void GetData_Android()
     {
         Debug.Log("Trying To Get the Data!");
-
+        Debug.Log(myGetEndpoint);
         //Appending headset information to the URL for GET request
 
         var uriBuilder = new UriBuilder(myGetEndpoint);
@@ -361,7 +365,7 @@ public class DataManager : MonoBehaviour
         uriBuilder.Query = query.ToString();
         myGetEndpoint = uriBuilder.ToString();
         StartCoroutine(GetRequest(myGetEndpoint));
-
+        Debug.Log(myGetEndpoint);
         //save image from url to local disk
 
     }
