@@ -50,6 +50,10 @@ public class DataManager : MonoBehaviour
     string combine_path;
 
     string path;
+
+    string myLog;
+    Queue myLogQueue = new Queue();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,12 +71,15 @@ public class DataManager : MonoBehaviour
         myData.CompletedBefore = false;
 
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
-        m_Path = Application.dataPath;
+        
 
 
         if (Application.platform == RuntimePlatform.WindowsEditor)
         {
             Debug.Log("Windows Platform");
+            
+            m_Path = Application.dataPath;
+            Debug.Log(m_Path);
             //Output the Game data path to the console
             path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             
@@ -92,18 +99,68 @@ public class DataManager : MonoBehaviour
         if (Application.platform == RuntimePlatform.Android)
         {
             Debug.Log("Android Platform");
+            m_Path = Application.persistentDataPath;
             //Output the Game data path to the console
             Debug.Log("Path : " + m_Path);
+            dataPath = m_Path +  Path.GetFullPath(fileName);
+            Debug.Log(dataPath);
 
             //Access the Headset Json to assign values
-            GetID();
+            GetID_Android();
 
             //When Get or Post
-            getDataButton.onClick.AddListener(GetData);
-            sendDataButton.onClick.AddListener(SendData);
+            getDataButton.onClick.AddListener(GetData_Android);
+            sendDataButton.onClick.AddListener(SendData_Android);
         }
 
     }
+
+    void CopyFile( string file, string file_noext)
+    {
+        string fileName = "/EVR/" + file;
+        if (!File.Exists(fileName))
+        {
+            TextAsset resourceFile = Resources.Load(file_noext) as TextAsset;
+            FileStream f = new FileStream(fileName, FileMode.Create);
+            foreach (byte b in resourceFile.bytes)
+            {
+                f.WriteByte(b);
+            }
+            f.Close();
+        }
+    }
+
+    void OnEnable()
+    {
+        Application.logMessageReceived += HandleLog;
+    }
+
+    void OnDisable()
+    {
+        Application.logMessageReceived -= HandleLog;
+    }
+    void HandleLog(string logString, string stackTrace, LogType type)
+    {
+        myLog = logString;
+        string newString = "\n [" + type + "] : " + myLog;
+        myLogQueue.Enqueue(newString);
+        if (type == LogType.Exception)
+        {
+            newString = "\n" + stackTrace;
+            myLogQueue.Enqueue(newString);
+        }
+        myLog = string.Empty;
+        foreach (string mylog in myLogQueue)
+        {
+            myLog += mylog;
+        }
+    }
+
+    void OnGUI()
+    {
+        GUILayout.Label(myLog);
+    }
+
 
     //Get the Headset Id and Endpoints and save to JSON
     void GetID()
@@ -116,6 +173,8 @@ public class DataManager : MonoBehaviour
             //Debug.Log(inp_ln);
             Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
             inp_ln = JsonUtility.ToJson(Hdata);
+            //CopyFile("Hdata.json", "Hdata");
+            //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
             string filePath = Application.dataPath + HeadsetPath;
             File.WriteAllText(filePath, inp_ln);
         }
@@ -193,6 +252,12 @@ public class DataManager : MonoBehaviour
 
                 //2. Save the results to data.json
                 dataAsJson = JsonUtility.ToJson(myData);
+
+                if (Application.platform == RuntimePlatform.Android)
+                {
+                    CopyFile("data.json", "data");
+                }
+                //CopyFile("data.json", "data");
                 string filePath = Application.dataPath + gameDataProjectFilePath;
                 File.WriteAllText(filePath, dataAsJson);
             }
@@ -254,6 +319,108 @@ public class DataManager : MonoBehaviour
                 Debug.Log("Form upload complete!");
                 Debug.Log(www.downloadHandler.isDone.ToString());
     
+            }
+        }
+    }
+
+    //==================================ANDROID==================================
+
+    //Get the Headset Id and Endpoints and save to JSON
+    void GetID_Android()
+    {
+        StreamReader inp_stm = new StreamReader(dataPath);
+
+        while (!inp_stm.EndOfStream)
+        {
+            string inp_ln = inp_stm.ReadLine();
+            //Debug.Log(inp_ln);
+            Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
+            inp_ln = JsonUtility.ToJson(Hdata);
+            //CopyFile("Hdata.json", "Hdata");
+            var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
+            string filePath = Application.dataPath + HeadsetPath;
+            File.WriteAllText(filePath, inp_ln);
+        }
+        inp_stm.Close();
+
+        Headset = Hdata.HeadsetID;
+        myGetEndpoint = Hdata.GetEndPoint;
+        myPushEndpoint = Hdata.PostEndPoint;
+
+    }
+
+    void GetData_Android()
+    {
+        Debug.Log("Trying To Get the Data!");
+
+        //Appending headset information to the URL for GET request
+
+        var uriBuilder = new UriBuilder(myGetEndpoint);
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        query["HeadSetNumber"] = Headset;
+        uriBuilder.Query = query.ToString();
+        myGetEndpoint = uriBuilder.ToString();
+        StartCoroutine(GetRequest(myGetEndpoint));
+
+        //save image from url to local disk
+
+    }
+
+    void SendData_Android()
+    {
+        Debug.Log("Trying To Send the Data!");
+        StartCoroutine(Upload_Android());
+    }
+
+    IEnumerator Upload_Android()
+    {
+        //A. Save the results to data.json 
+        myData.UserFirstName = myFirstNameText.text;
+        myData.UserLastName = myLastNameText.text;
+        myData.Grade = int.Parse(myGradeText.text);
+        myData.HeadSetNumber = myHeadsetNumberText.text;
+        if (myPassingInformationToggle.isOn == true)
+            myData.PassorFail = true;
+        else
+            myData.PassorFail = false;
+        if (myCompletionInformationToggle.isOn == true)
+            myData.CompletedBefore = true;
+        else
+            myData.CompletedBefore = false;
+        String dataAsJson1 = JsonUtility.ToJson(myData);
+        string filePath1 = Application.dataPath + gameDataProjectFilePath;
+        File.WriteAllText(filePath1, dataAsJson1);
+
+        //1. generate result from the data.json file.
+        string filePath = Application.dataPath + gameDataProjectFilePath;
+        string dataAsJson = File.ReadAllText(filePath);
+        myDataPost = JsonUtility.FromJson<MyClassData>(dataAsJson);
+        json = JsonUtility.ToJson(myDataPost);
+
+        //2. generate json from class
+        //myData = new MyClassData();
+        //json = JsonUtility.ToJson(myData);
+
+        //3. generate data from received result after GET
+        //json = JsonUtility.ToJson(myData);
+
+        //creating a from with key value pair.
+        WWWForm form = new WWWForm();
+        //form.AddField(ticket, json);
+        form.AddField("data", json);
+        using (UnityWebRequest www = UnityWebRequest.Post(myPushEndpoint, form))
+        {
+            yield return www.SendWebRequest();
+
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+            }
+            else
+            {
+                Debug.Log("Form upload complete!");
+                Debug.Log(www.downloadHandler.isDone.ToString());
+
             }
         }
     }
