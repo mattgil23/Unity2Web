@@ -208,6 +208,7 @@ public class DataManager : MonoBehaviour
         WebClient webClient = new WebClient();
         //webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
         webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", combine_path);
+        Debug.Log("Profile pic image" + combine_path);
         WWW www = new WWW(Url);
         while (!www.isDone)
             yield return null;
@@ -290,11 +291,30 @@ public class DataManager : MonoBehaviour
         else
             myData.CompletedBefore = false;
         String dataAsJson1 = JsonUtility.ToJson(myData);
-        string filePath1 = Application.dataPath + gameDataProjectFilePath;
+        string filePath1;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            filePath1 = m_Path + Path.GetFullPath("data.json");
+        }
+        else
+        {
+            filePath1 = Application.dataPath + gameDataProjectFilePath;
+        }
+
         File.WriteAllText(filePath1, dataAsJson1);
 
         //1. generate result from the data.json file.
-        string filePath = Application.dataPath + gameDataProjectFilePath;
+        string filePath;
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            filePath = m_Path + Path.GetFullPath("data.json");
+
+        }
+        else
+        {
+            filePath = Application.dataPath + gameDataProjectFilePath;
+
+        }
         string dataAsJson = File.ReadAllText(filePath);
         myDataPost = JsonUtility.FromJson<MyClassData>(dataAsJson);
         json = JsonUtility.ToJson(myDataPost);
@@ -356,7 +376,7 @@ public class DataManager : MonoBehaviour
     void GetData_Android()
     {
         Debug.Log("Trying To Get the Data!");
-        Debug.Log(myGetEndpoint);
+        Debug.Log("Earlier:" + myGetEndpoint);
         //Appending headset information to the URL for GET request
 
         var uriBuilder = new UriBuilder(myGetEndpoint);
@@ -364,8 +384,10 @@ public class DataManager : MonoBehaviour
         query["HeadSetNumber"] = Headset;
         uriBuilder.Query = query.ToString();
         myGetEndpoint = uriBuilder.ToString();
+        Debug.Log("Later:" + myGetEndpoint);
+
         StartCoroutine(GetRequest(myGetEndpoint));
-        Debug.Log(myGetEndpoint);
+        Debug.Log("FINISH GET");
         //save image from url to local disk
 
     }
@@ -373,59 +395,8 @@ public class DataManager : MonoBehaviour
     void SendData_Android()
     {
         Debug.Log("Trying To Send the Data!");
-        StartCoroutine(Upload_Android());
+        StartCoroutine(Upload());
     }
 
-    IEnumerator Upload_Android()
-    {
-        //A. Save the results to data.json 
-        myData.UserFirstName = myFirstNameText.text;
-        myData.UserLastName = myLastNameText.text;
-        myData.Grade = int.Parse(myGradeText.text);
-        myData.HeadSetNumber = myHeadsetNumberText.text;
-        if (myPassingInformationToggle.isOn == true)
-            myData.PassorFail = true;
-        else
-            myData.PassorFail = false;
-        if (myCompletionInformationToggle.isOn == true)
-            myData.CompletedBefore = true;
-        else
-            myData.CompletedBefore = false;
-        String dataAsJson1 = JsonUtility.ToJson(myData);
-        string filePath1 = Application.dataPath + gameDataProjectFilePath;
-        File.WriteAllText(filePath1, dataAsJson1);
-
-        //1. generate result from the data.json file.
-        string filePath = Application.dataPath + gameDataProjectFilePath;
-        string dataAsJson = File.ReadAllText(filePath);
-        myDataPost = JsonUtility.FromJson<MyClassData>(dataAsJson);
-        json = JsonUtility.ToJson(myDataPost);
-
-        //2. generate json from class
-        //myData = new MyClassData();
-        //json = JsonUtility.ToJson(myData);
-
-        //3. generate data from received result after GET
-        //json = JsonUtility.ToJson(myData);
-
-        //creating a from with key value pair.
-        WWWForm form = new WWWForm();
-        //form.AddField(ticket, json);
-        form.AddField("data", json);
-        using (UnityWebRequest www = UnityWebRequest.Post(myPushEndpoint, form))
-        {
-            yield return www.SendWebRequest();
-
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-            }
-            else
-            {
-                Debug.Log("Form upload complete!");
-                Debug.Log(www.downloadHandler.isDone.ToString());
-
-            }
-        }
-    }
+  
 }
