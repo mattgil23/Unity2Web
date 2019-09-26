@@ -104,7 +104,8 @@ public class DataManager : MonoBehaviour
             Debug.Log("Path : " + m_Path);
             dataPath = m_Path +  Path.GetFullPath(fileName);
             Debug.Log(dataPath);
-            combine_path = m_Path + Path.GetFullPath("login.png");
+            Url = "file:///" + m_Path + "/login.png";
+            combine_path = m_Path + "/login.png";
             //Access the Headset Json to assign values
             GetID_Android();
 
@@ -216,6 +217,7 @@ public class DataManager : MonoBehaviour
         image.GetComponent<RawImage>().texture = www.texture;
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
+            Debug.Log("GET END PT" + uri);
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
