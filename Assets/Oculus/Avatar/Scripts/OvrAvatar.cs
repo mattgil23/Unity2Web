@@ -1068,7 +1068,10 @@ public class OvrAvatar : MonoBehaviour
     }
 
     static ovrAvatarLights ovrLights = new ovrAvatarLights();
-	static void ExpressiveGlobalInit()
+
+    public object AssetsDoneLoading { get; internal set; }
+
+    static void ExpressiveGlobalInit()
 	{
 		if (doneExpressiveGlobalInit)
 		{
