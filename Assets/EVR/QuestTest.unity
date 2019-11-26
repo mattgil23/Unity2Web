@@ -97,7 +97,7 @@ LightmapSettings:
     m_ShowResolutionOverlay: 1
     m_ExportTrainingData: 0
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -4611,6 +4611,7 @@ Transform:
   - {fileID: 1093484210}
   - {fileID: 1223717449}
   - {fileID: 478760185}
+  - {fileID: 1844881066}
   m_Father: {fileID: 842586882}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -6039,8 +6040,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2096432946}
-  m_RootOrder: 1
+  m_Father: {fileID: 1368462636}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1844881067
 MonoBehaviour:
@@ -6571,12 +6572,12 @@ MonoBehaviour:
   activeScriptingDefineSymbolsWithoutSDKClasses: []
   scriptAliasLeftController: {fileID: 772544545}
   scriptAliasRightController: {fileID: 1284237987}
-  autoManageVRSettings: 1
+  autoManageVRSettings: 0
   autoLoadSetup: 1
   setups:
-  - {fileID: 761742095}
   - {fileID: 2096432947}
   - {fileID: 1514085313}
+  - {fileID: 761742095}
   - {fileID: 184266518}
   - {fileID: 1194572119}
   excludeTargetGroups: 1a0000001b000000
@@ -7283,7 +7284,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 842586882}
-  - {fileID: 1844881066}
   m_Father: {fileID: 951764983}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7304,8 +7304,8 @@ MonoBehaviour:
   actualHeadset: {fileID: 2069701787}
   actualLeftController: {fileID: 1223717448}
   actualRightController: {fileID: 478760184}
-  modelAliasLeftController: {fileID: 0}
-  modelAliasRightController: {fileID: 0}
+  modelAliasLeftController: {fileID: 1237635185}
+  modelAliasRightController: {fileID: 1184425224}
   cachedSystemSDKInfo:
     baseTypeName: VRTK.SDK_BaseSystem
     fallbackTypeName: VRTK.SDK_FallbackSystem
