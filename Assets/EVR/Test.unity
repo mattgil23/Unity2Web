@@ -6231,15 +6231,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5837af0260a118e4d808bfe0405429a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoManageScriptDefines: 1
+  autoManageScriptDefines: 0
   activeScriptingDefineSymbolsWithoutSDKClasses: []
   scriptAliasLeftController: {fileID: 1283945645}
   scriptAliasRightController: {fileID: 273824883}
-  autoManageVRSettings: 1
-  autoLoadSetup: 1
+  autoManageVRSettings: 0
+  autoLoadSetup: 0
   setups:
-  - {fileID: 1782631393}
   - {fileID: 66604281}
+  - {fileID: 1782631393}
   - {fileID: 1591729074}
   - {fileID: 1066514158}
   - {fileID: 28114275}
