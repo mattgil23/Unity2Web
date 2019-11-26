@@ -41,6 +41,14 @@ public class DataManager : MonoBehaviour
     private string myGetEndpoint = "";
     private string myPushEndpoint = "";
 
+    [Header("Windows")]
+    public bool devModeWin = true;
+    public string pathW = "C:/Users/candi/COURSES/Sem 3/EVR/EVR_file";
+
+    [Header("Android")]
+    public bool devModeAnd = true;
+    public string pathA = "/storage/emulated/0/Android/data/EVR_file";
+
     //get current date
     System.DateTime date = System.DateTime.Now;
     string dateFormat;
@@ -77,17 +85,26 @@ public class DataManager : MonoBehaviour
         if (Application.platform == RuntimePlatform.WindowsEditor)
         {
             //Debug.Log("Windows Platform");
-            
-            m_Path = Application.dataPath;
-            Debug.Log(m_Path);
-            //Output the Game data path to the console
-            path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            
-            dataPath = Path.GetFullPath(fileName);
-            Debug.Log(dataPath);
-            //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
-            Url = "file:///" + m_Path + "//EVR//login.png";
-            combine_path= m_Path + "//EVR//login.png";
+            if (devModeWin)
+            {
+                m_Path = Application.dataPath;
+                Debug.Log(m_Path);
+                //Output the Game data path to the console
+                path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                dataPath = Path.GetFullPath(fileName);
+                Debug.Log(dataPath);
+                //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
+                Url = "file:///" + m_Path + "//EVR//login.png";
+                combine_path = m_Path + "//EVR//login.png";
+            }
+            else
+            {
+                dataPath = pathW + "/headset.txt";
+                Debug.Log(dataPath);
+                Url = "file:///" + pathW + "/login.png";
+                combine_path = pathW + "/login.png";
+            }
 
             //Access the Headset Json to assign values
             GetID();
@@ -100,18 +117,26 @@ public class DataManager : MonoBehaviour
         if ( Application.platform == RuntimePlatform.WindowsPlayer)
         {
             //Debug.Log("Windows Platform");
+            if (devModeWin)
+            {
+                m_Path = Application.dataPath;
+                Debug.Log(m_Path);
+                //Output the Game data path to the console
+                path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-            m_Path = Application.dataPath;
-            Debug.Log(m_Path);
-            //Output the Game data path to the console
-            path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            dataPath = Path.GetFullPath(fileName);
-            Debug.Log(dataPath);
-            //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
-            Url = "file:///" + m_Path + "/login.png";
-            combine_path = m_Path + "/login.png";
-
+                dataPath = Path.GetFullPath(fileName);
+                Debug.Log(dataPath);
+                //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
+                Url = "file:///" + m_Path + "/login.png";
+                combine_path = m_Path + "/login.png";   
+            }
+            else
+            {
+                dataPath = pathW + "/headset.txt";
+                Debug.Log(dataPath);
+                Url = "file:///" + pathW + "/login.png";
+                combine_path = pathW + "/login.png";
+            }
             //Access the Headset Json to assign values
             GetID();
 
@@ -121,14 +146,24 @@ public class DataManager : MonoBehaviour
         }
         if (Application.platform == RuntimePlatform.Android)
         {
-            Debug.Log("Android Platform");
-            m_Path = Application.persistentDataPath;
-            //Output the Game data path to the console
-            Debug.Log("Path : " + m_Path);
-            dataPath = m_Path +  Path.GetFullPath(fileName);
-            Debug.Log(dataPath);
-            Url = "file:///" + m_Path + "/login.png";
-            combine_path = m_Path + "/login.png";
+            if (devModeAnd)
+            {
+                Debug.Log("Android Platform");
+                m_Path = Application.persistentDataPath;
+                //Output the Game data path to the console
+                Debug.Log("Path : " + m_Path);
+                dataPath = m_Path + Path.GetFullPath(fileName);
+                Debug.Log(dataPath);
+                Url = "file:///" + m_Path + "/login.png";
+                combine_path = m_Path + "/login.png";
+            }
+            else
+            {
+                dataPath = pathA + "/headset.txt";
+                Debug.Log(dataPath);
+                Url = "file:///" + pathA + "/login.png";
+                combine_path = pathA + "/login.png";
+            }
             //Access the Headset Json to assign values
             GetID_Android();
 
@@ -199,11 +234,23 @@ public class DataManager : MonoBehaviour
             inp_ln = JsonUtility.ToJson(Hdata);
             //CopyFile("Hdata.json", "Hdata");
             //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
-            if (Application.platform == RuntimePlatform.WindowsPlayer)
+            string filePath;
+            if ((Application.platform == RuntimePlatform.WindowsPlayer) && (devModeWin))
             {
                 HeadsetPath = "/Hdata.json";
+                filePath = Application.dataPath + HeadsetPath;
             }
-            string filePath = Application.dataPath + HeadsetPath;
+            if ((Application.platform == RuntimePlatform.WindowsPlayer) && (devModeWin))
+            {
+                HeadsetPath = "/EVR/Hdata.json";
+                filePath = Application.dataPath + HeadsetPath;
+            }
+            else
+            {
+                HeadsetPath = pathW + "/Hdata.json";
+                filePath = HeadsetPath;
+            }
+           
             Debug.Log(filePath);
             File.WriteAllText(filePath, inp_ln);
         }
@@ -284,19 +331,28 @@ public class DataManager : MonoBehaviour
                 //2. Save the results to data.json
                 dataAsJson = JsonUtility.ToJson(myData);
                 string filePath;
-                if (Application.platform == RuntimePlatform.Android)
+                if ((Application.platform == RuntimePlatform.Android) && (devModeAnd))
                 {
                     //CopyFile("data.json", "data");
                     filePath = m_Path + Path.GetFullPath("data.json");
                 }
-                else if (Application.platform == RuntimePlatform.WindowsPlayer)
+                else if (!devModeAnd)
+                {
+                    filePath = pathA + "/data.json";
+                }
+                else if ((Application.platform == RuntimePlatform.WindowsPlayer) && (devModeWin))
                 {
                     gameDataProjectFilePath = "/data.json";
                     filePath = Application.dataPath + gameDataProjectFilePath;
                 }
+                else if ((Application.platform == RuntimePlatform.WindowsEditor) && (devModeWin))
+                {
+                    gameDataProjectFilePath= "/EVR/data.json";
+                    filePath = Application.dataPath + gameDataProjectFilePath;
+                }
                 else
                 {
-                    filePath = Application.dataPath + gameDataProjectFilePath;
+                    filePath = pathW + "/data.json"; 
                 }
                 //CopyFile("data.json", "data");
                 File.WriteAllText(filePath, dataAsJson);
@@ -327,9 +383,17 @@ public class DataManager : MonoBehaviour
             myData.CompletedBefore = false;
         String dataAsJson1 = JsonUtility.ToJson(myData);
         string filePath1;
-        if (Application.platform == RuntimePlatform.Android)
+        if ((Application.platform == RuntimePlatform.Android) && (devModeAnd))
         {
             filePath1 = m_Path + Path.GetFullPath("data.json");
+        }
+        else if (!devModeAnd)
+        {
+            filePath1 = pathA + "/data.json";
+        }
+        else if (!devModeWin)
+        {
+            filePath1 = pathW + "/data.json";
         }
         else
         {
@@ -339,19 +403,27 @@ public class DataManager : MonoBehaviour
         File.WriteAllText(filePath1, dataAsJson1);
 
         //1. generate result from the data.json file.
-        string filePath;
-        if (Application.platform == RuntimePlatform.Android)
+        string filePath = "";
+        if ((Application.platform == RuntimePlatform.Android) && devModeAnd)
         {
             filePath = m_Path + Path.GetFullPath("data.json");
-
         }
-        else if (Application.platform == RuntimePlatform.WindowsPlayer)
+        else if (!devModeAnd)
+        {
+            filePath = pathA + "/data.json";
+        }
+        else if (!devModeWin)
+        {
+            filePath = pathW + "/data.json";
+        }
+        else if ((Application.platform == RuntimePlatform.WindowsPlayer) && devModeWin)
         {
             gameDataProjectFilePath = "/data.json";
             filePath = Application.dataPath + gameDataProjectFilePath;
         }
-        else
+        else if((Application.platform == RuntimePlatform.WindowsEditor) && devModeWin)
         {
+            gameDataProjectFilePath = "/EVR/data.json";
             filePath = Application.dataPath + gameDataProjectFilePath;
         }
         string dataAsJson = File.ReadAllText(filePath);
@@ -401,7 +473,15 @@ public class DataManager : MonoBehaviour
             inp_ln = JsonUtility.ToJson(Hdata);
             //CopyFile("Hdata.json", "Hdata");
             //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
-            string filePath = filePath = m_Path + Path.GetFullPath("Hdata.json");
+            string filePath;
+            if (devModeAnd)
+            {
+                filePath = m_Path + Path.GetFullPath("Hdata.json");
+            }
+            else
+            {
+                filePath = pathA + "/Hdata.json";
+            }
             File.WriteAllText(filePath, inp_ln);
         }
         inp_stm.Close();
