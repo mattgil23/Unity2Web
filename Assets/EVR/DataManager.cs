@@ -20,7 +20,7 @@ public class DataManager : MonoBehaviour
     //public string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
     private string HeadsetPath = "/EVR/Hdata.json";
     private string gameDataProjectFilePath = "/EVR/data.json";
-    private string gameDataFileName = "/EVR/data.json";
+    //********************************private string gameDataFileName = "/EVR/data.json";
 
     [Header("User Information")]
     public InputField myFirstNameText;

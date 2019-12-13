@@ -1,0 +1,9 @@
+Updated the code to work on the quest.
+While testing it was facing issues to start the apk on the quest.
+It was not loading the apk on the quest. 
+It loaded the apk before adding the VR mode in player settings, and changing to auto manage. But then the buttons didn't work, only could see the scene.
+When unticked "Auto-Manage", the scene doesn't load.
+Couldn't figure out why this was happening, but once that is done, the code should work. 
+In the code, if the devMode bool is checked, it uses the persistent path, if not then the user can provide the path to where the files are stored. 
+If using persistent path, the user needs to manually store the files in the persistent path, this path will be displayed on screen when the scene loads. 
+To not show logs on screen, simply comment out he handle Log code.
