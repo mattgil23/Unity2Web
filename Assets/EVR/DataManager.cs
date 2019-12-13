@@ -8,19 +8,16 @@ using System;
 using System.Web;
 using System.Net;
 
+/*
+ * I have left few things commented, those are needed when certain testing has to be performed.
+ */
 public class DataManager : MonoBehaviour
 {
-
     [Header("DataPaths")]
-    //public string Url = "file:///D://EVR//Projects//U2Web//Unity2Web//Assets//EVR//login.png";
-    //public string dataPath = "C:\\Users\\EnhanceVR\\Desktop\\headset.txt";
-    string dataPath;
-    string fileName = "headset.txt";
-    //public string Url = "file:///C://Users//candi//Desktop//COURSES//Sem 3//EVR//UnityToWeb//Assets//EVR//login.png";
-    //public string dataPath = "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\headset.txt";
+    private string dataPath;
+    private string fileName = "headset.txt";
     private string HeadsetPath = "/EVR/Hdata.json";
     private string gameDataProjectFilePath = "/EVR/data.json";
-    //********************************private string gameDataFileName = "/EVR/data.json";
 
     [Header("User Information")]
     public InputField myFirstNameText;
@@ -42,23 +39,25 @@ public class DataManager : MonoBehaviour
     private string myPushEndpoint = "";
 
     [Header("Windows")]
-    public bool devModeWin = true;
+    public bool devModeWin = true;                  //if in devMode use the application persistent data paths
     public string pathW = "C:/Users/candi/COURSES/Sem 3/EVR/EVR_file";
 
     [Header("Android")]
-    public bool devModeAnd = true;
+    public bool devModeAnd = true;                  //if in devMode use the application persistent data paths
     public string pathA = "/storage/emulated/0/Android/data/EVR_file";
 
     //get current date
     System.DateTime date = System.DateTime.Now;
     string dateFormat;
+
+    //Image for profile data
     Texture2D myTexture;
     string m_Path;
     string Url;
     string combine_path;
-
     string path;
 
+    //Handle logs to be displayed on screen
     string myLog;
     Queue myLogQueue = new Queue();
 
@@ -77,11 +76,9 @@ public class DataManager : MonoBehaviour
         myData.Grade = 0;
         myData.DateLastAttempted = "";
         myData.CompletedBefore = false;
-
         dateFormat =  date.Month + "/" + date.Day + "/" + date.Year;
-        
 
-
+        //Check wheich platform is the app running on.
         if (Application.platform == RuntimePlatform.WindowsEditor)
         {
             //Debug.Log("Windows Platform");
@@ -89,16 +86,13 @@ public class DataManager : MonoBehaviour
             {
                 m_Path = Application.dataPath;
                 Debug.Log(m_Path);
-                //Output the Game data path to the console
                 path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
                 dataPath = Path.GetFullPath(fileName);
                 Debug.Log(dataPath);
-                //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
                 Url = "file:///" + m_Path + "//EVR//login.png";
                 combine_path = m_Path + "//EVR//login.png";
             }
-            else
+            else                                //If in devmode, use application datapath, else can change the paths where the files are stored.
             {
                 dataPath = pathW + "/headset.txt";
                 Debug.Log(dataPath);
@@ -121,12 +115,9 @@ public class DataManager : MonoBehaviour
             {
                 m_Path = Application.dataPath;
                 Debug.Log(m_Path);
-                //Output the Game data path to the console
                 path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
                 dataPath = Path.GetFullPath(fileName);
                 Debug.Log(dataPath);
-                //Path.Combine("/First/Path/To", "Some/File/At/foo.txt");
                 Url = "file:///" + m_Path + "/login.png";
                 combine_path = m_Path + "/login.png";   
             }
@@ -150,7 +141,6 @@ public class DataManager : MonoBehaviour
             {
                 Debug.Log("Android Platform");
                 m_Path = Application.persistentDataPath;
-                //Output the Game data path to the console
                 Debug.Log("Path : " + m_Path);
                 dataPath = m_Path + Path.GetFullPath(fileName);
                 Debug.Log(dataPath);
@@ -171,33 +161,11 @@ public class DataManager : MonoBehaviour
             getDataButton.onClick.AddListener(GetData_Android);
             sendDataButton.onClick.AddListener(SendData_Android);
         }
-
     }
 
-    void CopyFile( string file, string file_noext)
-    {
-        string fileName = "/EVR/" + file;
-        if (!File.Exists(fileName))
-        {
-            TextAsset resourceFile = Resources.Load(file_noext) as TextAsset;
-            FileStream f = new FileStream(fileName, FileMode.Create);
-            foreach (byte b in resourceFile.bytes)
-            {
-                f.WriteByte(b);
-            }
-            f.Close();
-        }
-    }
-
-    void OnEnable()
-    {
-        Application.logMessageReceived += HandleLog;
-    }
-
-    void OnDisable()
-    {
-        Application.logMessageReceived -= HandleLog;
-    }
+    /*
+     * Handles logging of messages, displays logs on screen
+     */
     void HandleLog(string logString, string stackTrace, LogType type)
     {
         myLog = logString;
@@ -214,26 +182,32 @@ public class DataManager : MonoBehaviour
             myLog += mylog;
         }
     }
-
-    void OnGUI()
+    /*
+     * Used with handle logs
+     */
+    void OnEnable() //when enabled, increment log counter
+    {
+        Application.logMessageReceived += HandleLog;
+    }
+    void OnDisable() //when disabled, decrement log counter
+    {
+        Application.logMessageReceived -= HandleLog;
+    }
+    void OnGUI() //display logs on screen
     {
         GUILayout.Label(myLog);
     }
 
-
+    //==================================WINDOWS==================================
     //Get the Headset Id and Endpoints and save to JSON
     void GetID()
     {
         StreamReader inp_stm = new StreamReader(dataPath);
-
-        while (!inp_stm.EndOfStream)
+        while (!inp_stm.EndOfStream)                //read till end of file
         {
             string inp_ln = inp_stm.ReadLine();
-            //Debug.Log(inp_ln);
             Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
             inp_ln = JsonUtility.ToJson(Hdata);
-            //CopyFile("Hdata.json", "Hdata");
-            //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
             string filePath;
             if ((Application.platform == RuntimePlatform.WindowsPlayer) && (devModeWin))
             {
@@ -250,60 +224,53 @@ public class DataManager : MonoBehaviour
                 HeadsetPath = pathW + "/Hdata.json";
                 filePath = HeadsetPath;
             }
-           
             Debug.Log(filePath);
             File.WriteAllText(filePath, inp_ln);
         }
         inp_stm.Close();
 
+        //save the read data from JSON
         Headset = Hdata.HeadsetID;
         myGetEndpoint = Hdata.GetEndPoint;
         myPushEndpoint = Hdata.PostEndPoint;
 
     }
 
+    /*
+     * When we want to retrive data, GET REQUEST
+     */
     void GetData()
     {
         Debug.Log("Trying To Get the Data!");
-        
         //Appending headset information to the URL for GET request
-        
         var uriBuilder = new UriBuilder(myGetEndpoint);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["HeadSetNumber"] = Headset;
         uriBuilder.Query = query.ToString();
         myGetEndpoint = uriBuilder.ToString();
         StartCoroutine(GetRequest(myGetEndpoint));
-
-        //save image from url to local disk
-       
     }
 
     IEnumerator GetRequest(string uri)
     {
         WebClient webClient = new WebClient();
-        //webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", "C:\\Users\\candi\\Desktop\\COURSES\\Sem 3\\EVR\\UnityToWeb\\Assets\\EVR\\login.png");
-        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", combine_path);
+        webClient.DownloadFile("http://evr-demo.herokuapp.com/images/login.png", combine_path);     //download the profile image
         Debug.Log("Profile pic image" + combine_path);
         WWW www = new WWW(Url);
         while (!www.isDone)
             yield return null;
         GameObject image = GameObject.Find("RawImage");
-        image.GetComponent<RawImage>().texture = www.texture;
+        image.GetComponent<RawImage>().texture = www.texture;                   //save image as a texture
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
             Debug.Log("GET END PT" + uri);
-            // Request and wait for the desired page.
-            yield return webRequest.SendWebRequest();
-
+            yield return webRequest.SendWebRequest();                           // Request and wait for the desired page.
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
-
-            if (webRequest.isNetworkError)
+]           if (webRequest.isNetworkError)
             {
                 Debug.Log(pages[page] + ": Error: " + webRequest.error);
             }
-
             else
             {
                 string dataAsJson = webRequest.downloadHandler.text.ToString();
@@ -333,7 +300,6 @@ public class DataManager : MonoBehaviour
                 string filePath;
                 if ((Application.platform == RuntimePlatform.Android) && (devModeAnd))
                 {
-                    //CopyFile("data.json", "data");
                     filePath = m_Path + Path.GetFullPath("data.json");
                 }
                 else if (!devModeAnd)
@@ -354,12 +320,14 @@ public class DataManager : MonoBehaviour
                 {
                     filePath = pathW + "/data.json"; 
                 }
-                //CopyFile("data.json", "data");
                 File.WriteAllText(filePath, dataAsJson);
             }
         }
     }
 
+    /*
+     * When we want to send data, POST REQUEST
+     */
     void SendData()
     {
         Debug.Log("Trying To Send the Data!");
@@ -439,7 +407,6 @@ public class DataManager : MonoBehaviour
 
         //creating a from with key value pair.
         WWWForm form = new WWWForm();
-        //form.AddField(ticket, json);
         form.AddField("data", json);
         using (UnityWebRequest www = UnityWebRequest.Post(myPushEndpoint, form))
         {
@@ -453,13 +420,11 @@ public class DataManager : MonoBehaviour
             {
                 Debug.Log("Form upload complete!");
                 Debug.Log(www.downloadHandler.isDone.ToString());
-    
             }
         }
     }
 
     //==================================ANDROID==================================
-
     //Get the Headset Id and Endpoints and save to JSON
     void GetID_Android()
     {
@@ -471,8 +436,6 @@ public class DataManager : MonoBehaviour
             //Debug.Log(inp_ln);
             Hdata = JsonUtility.FromJson<ClassHeadset>(inp_ln);
             inp_ln = JsonUtility.ToJson(Hdata);
-            //CopyFile("Hdata.json", "Hdata");
-            //var HeadsetPath = Resources.Load<TextAsset>("EVR/Hdata");
             string filePath;
             if (devModeAnd)
             {
@@ -495,20 +458,16 @@ public class DataManager : MonoBehaviour
     void GetData_Android()
     {
         Debug.Log("Trying To Get the Data!");
-        Debug.Log("Earlier:" + myGetEndpoint);
         //Appending headset information to the URL for GET request
-
         var uriBuilder = new UriBuilder(myGetEndpoint);
         var query = HttpUtility.ParseQueryString(uriBuilder.Query);
         query["HeadSetNumber"] = Headset;
         uriBuilder.Query = query.ToString();
         myGetEndpoint = uriBuilder.ToString();
-        Debug.Log("Later:" + myGetEndpoint);
+        Debug.Log("The get end point is :" + myGetEndpoint);
 
         StartCoroutine(GetRequest(myGetEndpoint));
         Debug.Log("FINISH GET");
-        //save image from url to local disk
-
     }
 
     void SendData_Android()
@@ -516,6 +475,4 @@ public class DataManager : MonoBehaviour
         Debug.Log("Trying To Send the Data!");
         StartCoroutine(Upload());
     }
-
-  
 }
