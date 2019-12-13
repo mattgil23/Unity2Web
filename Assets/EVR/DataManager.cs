@@ -267,7 +267,7 @@ public class DataManager : MonoBehaviour
             yield return webRequest.SendWebRequest();                           // Request and wait for the desired page.
             string[] pages = uri.Split('/');
             int page = pages.Length - 1;
-]           if (webRequest.isNetworkError)
+            if (webRequest.isNetworkError)
             {
                 Debug.Log(pages[page] + ": Error: " + webRequest.error);
             }
